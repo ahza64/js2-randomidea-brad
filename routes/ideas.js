@@ -40,5 +40,23 @@ router.post('/', (req, res) => {
   ideas.push(idea)
   res.json({ success: true, data: idea })
 })
+router.put('/:id', (req, res) => {
+    const idea = ideas.find(idea => idea.id === parseInt(req.params.id))
+    if (!idea) {
+      return res.status(404).send({ success: false, message: 'Idea not found' })
+    }
+    idea.text = req.body.text || idea.text
+    idea.tag = req.body.tag || idea.tag
+    res.send({ success: true, data: idea })
+})
+router.delete('/:id', (req, res) => {
+    const idea = ideas.find(idea => idea.id === parseInt(req.params.id))
+    if (!idea) {
+      return res.status(404).send({ success: false, message: 'Idea not found' })
+    }
+    const index = ideas.indexOf(idea)
+    ideas.splice(index, 1)
+    res.send({ success: true, data: ideas })
+})
 
 module.exports = router;
