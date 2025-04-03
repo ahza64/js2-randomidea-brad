@@ -36,25 +36,33 @@ router.post('/', async (req, res) => {
 })
 router.put('/:id', async (req, res) => {
   try {
-    const idea = await Idea.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: { 
-          text: req.body.text, 
-          tag: req.body.tag, 
-        }
-      },
-      { new: true }
-    )
-    res.json({ success: true, data: idea })
+    const idea = await Idea.findById(req.params.id)
+    if (idea.username === req.body.username) {
+      const idea = await Idea.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: { 
+            text: req.body.text, 
+            tag: req.body.tag, 
+          }
+        },
+        { new: true }
+      )
+      return res.json({ success: true, data: idea })
+    }
+    res.status(403).json({ success: false, error: 'You are not authorized to edit this idea' })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
   }
 })
 router.delete('/:id', async (req, res) => {
   try {
-    await Idea.findByIdAndDelete(req.params.id)
-    res.json({ success: true, message: 'Idea deleted' })
+    const idea = await Idea.findById(req.params.id)
+    if (idea.username === req.body.username) {
+      await Idea.findByIdAndDelete(req.params.id)
+      return res.json({ success: true, message: 'Idea deleted' })
+    }
+    res.status(403).json({ success: false, error: 'You are not authorized to delete this idea' })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
   }
