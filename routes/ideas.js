@@ -47,16 +47,16 @@ router.put('/:id', async (req, res) => {
       { new: true }
     )
     res.json({ success: true, data: idea })
-  } catch {
-    res.status(500).json({ success: false, error: 'Something went wrong' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
   }
 })
 router.delete('/:id', async (req, res) => {
   try {
     await Idea.findByIdAndDelete(req.params.id)
     res.json({ success: true, message: 'Idea deleted' })
-  } catch {
-    res.status(500).json({ success: false, error: 'Something went wrong' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
   }
 })
 
